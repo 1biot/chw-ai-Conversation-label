@@ -69,6 +69,8 @@ try {
 
     // validate schema
     $requestBodyJson = json_decode($request->getRawBody());
+    file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'last_request', $request->getRawBody());
+
     $conversationSchema = new Chatwoot\Schemas\Events\ConversationCreated();
     if (!$conversationSchema->validate($requestBodyJson)) {
         throw new Exception('Could not validate a request');

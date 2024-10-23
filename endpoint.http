@@ -1,4 +1,4 @@
-POST {{HOST}}/?token=heslo
+POST {{host}}/?token={{token}}
 Content-Type: application/json
 
 {

@@ -1,5 +1,6 @@
 vendor
 http-client.*
+last_request
 .DS_Store
 .env
 .idea
