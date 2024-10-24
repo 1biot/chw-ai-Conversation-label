@@ -6,21 +6,18 @@ spec:
         branch: main
         repo_clone_url: https://github.com/1biot/chw-ai-conversation-label.git
       name: chw-ai-conversation-label
+      instance_count: 1
+      instance_size_slug: basic-xxs
       envs:
         - key: AUTH_TOKEN
           scope: RUN_TIME
-          type: SECRET
         - key: CHATWOOT_API_ACCESS_TOKEN
           scope: RUN_TIME
-          type: SECRET
         - key: CHATWOOT_API_URL
           scope: RUN_TIME
-          type: SECRET
         - key: OPENAI_API_KEY
           scope: RUN_TIME
-          type: SECRET
         - key: OPENAI_ORG
           scope: RUN_TIME
         - key: OPENAI_ASSISTANT_ID
           scope: RUN_TIME
-          type: SECRET
