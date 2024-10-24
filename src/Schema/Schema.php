@@ -4,5 +4,5 @@ namespace Schema;
 
 interface Schema
 {
-    public function getSchema(): \stdClass;
+    public static function getSchema(): \Nette\Schema\Schema;
 }

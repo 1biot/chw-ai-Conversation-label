@@ -70,35 +70,37 @@ try {
     // validate schema
     $requestBodyJson = json_decode($request->getRawBody());
     file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'last_request', $request->getRawBody());
-
-    $conversationSchema = new Chatwoot\Schemas\Events\ConversationCreated();
-    if (!$conversationSchema->validate($requestBodyJson)) {
+    try {
+        $processor = new Nette\Schema\Processor;
+        /** @var Chatwoot\Schemas\Events\ConversationCreated $conversationCreatedEvent */
+        $conversationCreatedEvent = $processor->process(Chatwoot\Schemas\Events\ConversationCreated::getSchema(), $requestBodyJson);
+    } catch (Nette\Schema\ValidationException $e) {
         throw new Exception('Could not validate a request');
     }
 
-    $event = Event::from($requestBodyJson->event ?? '');
+
+    $event = Event::from($conversationCreatedEvent->event);
     if ($event !== Event::ConversationCreated) {
         throw new Exception('Invalid event');
     }
 
-    $messages = $requestBodyJson->messages ?? [];
+    $messages = $conversationCreatedEvent->messages;
     if (empty($messages)) {
         throw new Exception('Conversation messages are empty');
     }
 
     $initialMessage = $messages[0];
-    $messageContent = $initialMessage['content'] ?? '';
-    if ($messageContent === '') {
+    if ($initialMessage->content === '') {
         throw new Exception('Message content is empty');
     }
 
-    $label = getLabelFromChatGPT($messageContent);
+    $label = getLabelFromChatGPT($initialMessage->content);
     if ($label === null) {
         throw new Exception('Failed to get label from message');
     }
 
     $client = new \Chatwoot\Client($_ENV['CHATWOOT_API_ACCESS_TOKEN'], $_ENV['CHATWOOT_API_URL']);
-    if (!$client->addConversationLabel($requestBodyJson->account_id, $requestBodyJson->id, [$label])) {
+    if (!$client->addConversationLabel($initialMessage->account_id, $requestBodyJson->id, [$label])) {
         throw new Exception('Failed to add label');
     }
 

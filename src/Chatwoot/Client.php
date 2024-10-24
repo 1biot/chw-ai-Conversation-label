@@ -25,9 +25,10 @@ class Client
         try {
             $response = $client->post($api, [
                 'headers' => [
+                    'Content-type' => 'application/json; charset=utf-8',
                     'api_access_token' => $this->apiAccessToken
                 ],
-                'body' => (object)['labels' => $labels]
+                'body' => json_encode(['labels' => $labels])
             ]);
 
             return $response->getStatusCode() === 200;
