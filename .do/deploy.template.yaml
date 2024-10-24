@@ -8,14 +8,19 @@ spec:
       name: chw-ai-conversation-label
       envs:
         - key: AUTH_TOKEN
+          scope: RUN_TIME
           type: SECRET
         - key: CHATWOOT_API_ACCESS_TOKEN
+          scope: RUN_TIME
           type: SECRET
         - key: CHATWOOT_API_URL
+          scope: RUN_TIME
           type: SECRET
         - key: OPENAI_API_KEY
+          scope: RUN_TIME
           type: SECRET
         - key: OPENAI_ORG
-          scope: SECRET
+          scope: RUN_TIME
         - key: OPENAI_ASSISTANT_ID
+          scope: RUN_TIME
           type: SECRET
