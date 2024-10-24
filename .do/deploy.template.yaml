@@ -1,0 +1,21 @@
+spec:
+  name: chw-ai-conversation-label
+  services:
+    - environment_slug: php
+      git:
+        branch: main
+        repo_clone_url: https://github.com/1biot/chw-ai-conversation-label.git
+      name: chw-ai-conversation-label
+      envs:
+        - key: AUTH_TOKEN
+          type: SECRET
+        - key: CHATWOOT_API_ACCESS_TOKEN
+          type: SECRET
+        - key: CHATWOOT_API_URL
+          type: SECRET
+        - key: OPENAI_API_KEY
+          type: SECRET
+        - key: OPENAI_ORG
+          scope: SECRET
+        - key: OPENAI_ASSISTANT_ID
+          type: SECRET
