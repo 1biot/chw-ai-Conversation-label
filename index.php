@@ -4,7 +4,6 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 use Chatwoot\Enums\Event;
-use JetBrains\PhpStorm\NoReturn;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
 use Nette\Http\RequestFactory;
@@ -14,14 +13,14 @@ use Orhanerday\OpenAi\OpenAi;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
-#[NoReturn] function sendResponse(array $data, int $code = IResponse::S200_OK): void {
+function sendResponse(array $data, int $code = IResponse::S200_OK): void {
     $response = new Response();
     $response->setContentType('application/json');
     $response->setCode($code);
     die(json_encode($data));
 }
 
-function getLabelFromChatGPT(string $message): ?string
+function getLabelFromChatGPT(string $message): ?array
 {
     $openAi = new OpenAi($_ENV['OPENAI_API_KEY']);
     $openAi->setORG($_ENV['OPENAI_ORG']);
@@ -32,7 +31,7 @@ function getLabelFromChatGPT(string $message): ?string
         $openAiAssistantId = $_ENV['OPENAI_ASSISTANT_ID'];
         $assistant = new LabelConversion(
             $openAiAssistantId === '' ? null : $openAiAssistantId,
-            ["demand", "support", "spam", "offer", "info", "billing"]
+            ["demand", "support", "spam", "offer", "billing"]
         );
         return $assistant($openAi, $message);
     } catch (Exception $e) {
@@ -78,7 +77,6 @@ try {
         throw new Exception('Could not validate a request');
     }
 
-
     $event = Event::from($conversationCreatedEvent->event);
     if ($event !== Event::ConversationCreated) {
         throw new Exception('Invalid event');
@@ -94,13 +92,13 @@ try {
         throw new Exception('Message content is empty');
     }
 
-    $label = getLabelFromChatGPT($initialMessage->content);
-    if ($label === null) {
+    $labels = getLabelFromChatGPT($initialMessage->content);
+    if ($labels === null) {
         throw new Exception('Failed to get label from message');
     }
 
     $client = new \Chatwoot\Client($_ENV['CHATWOOT_API_ACCESS_TOKEN'], $_ENV['CHATWOOT_API_URL']);
-    if (!$client->addConversationLabel($initialMessage->account_id, $requestBodyJson->id, [$label])) {
+    if (!$client->addConversationLabel($initialMessage->account_id, $requestBodyJson->id, $labels)) {
         throw new Exception('Failed to add label');
     }
 

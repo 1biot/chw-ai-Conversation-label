@@ -27,18 +27,18 @@ class LabelConversion extends Assistant
     /**
      * @throws \Exception
      */
-    public function __invoke(OpenAi $client, string $message): string
+    public function __invoke(OpenAi $client, string $message): array
     {
         $this->install($client);
-        $label = $this->run($client, $message);
+        $labels = $this->run($client, $message);
         $this->uninstall($client);
-        return $label;
+        return $labels;
     }
 
     /**
      * @throws \Exception
      */
-    private function run(OpenAi $client, string $message): string
+    private function run(OpenAi $client, string $message): array
     {
         $response = $client->createThreadAndRun(
             [
@@ -74,11 +74,15 @@ class LabelConversion extends Assistant
 
         $response = $client->listThreadMessages($threadId);
         $response = @json_decode($response, true);
-        $label = $response['data'][0]['content'][0]['text']['value'] ?? 'unknown';
-        if ($label === 'unknown') {
+        $labelString = $response['data'][0]['content'][0]['text']['value'] ?? 'unknown';
+        if ($labelString === 'unknown') {
             throw new \Exception('Could not parse response');
         }
 
-        return $label;
+        return array_filter(array_map(function (string $label): string {
+            return trim($label);
+        }, explode(',', $labelString)), function (string $label): bool {
+            return $label !== '';
+        });
     }
 }

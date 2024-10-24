@@ -1,4 +1,5 @@
 vendor
+endpoint.http
 http-client.*
 last_request
 .DS_Store
