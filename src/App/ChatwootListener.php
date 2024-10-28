@@ -30,7 +30,7 @@ final class ChatwootListener extends Leaf\App
         );
         $this->config('debug');
         self::use([$this, 'authMiddleware']);
-        self::post('/', ['middleware' => [$this, 'checkEventMiddleware'], [$this, 'callAction']]);
+        self::post('/', ['middleware' => [$this, 'checkEventMiddleware'], [$this, 'actionProcessEvent']]);
         self::get('/', function() {
             $this->response()->json('hello world');
         });
@@ -73,7 +73,7 @@ final class ChatwootListener extends Leaf\App
         }
     }
 
-    protected function callAction(): void
+    protected function actionProcessEvent(): void
     {
         /** @var Chatwoot\Schemas\Events\ConversationCreated $event */
         $event = $this->request()::next();
