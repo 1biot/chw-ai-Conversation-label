@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "035423c35c9f53ff0b240b9961ab3013",
+    "content-hash": "bfd0bb499448bf870f82b1f8f855e855",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -452,6 +452,71 @@
             "time": "2024-09-27T17:53:12+00:00"
         },
         {
+            "name": "leafs/date",
+            "version": "v2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/leafsphp/date.git",
+                "reference": "9f12bc13cec85ee3f015667d9f9e7913e94dd4ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/leafsphp/date/zipball/9f12bc13cec85ee3f015667d9f9e7913e94dd4ad",
+                "reference": "9f12bc13cec85ee3f015667d9f9e7913e94dd4ad",
+                "shasum": ""
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.14",
+                "leafs/alchemy": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Leaf\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Darko",
+                    "email": "mickdd22@gmail.com",
+                    "homepage": "https://mychi.netlify.app",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Leaf PHP date module",
+            "homepage": "https://leafphp.netlify.app/#/",
+            "keywords": [
+                "date",
+                "datetime",
+                "framework",
+                "leaf",
+                "php",
+                "time"
+            ],
+            "support": {
+                "issues": "https://github.com/leafsphp/date/issues",
+                "source": "https://github.com/leafsphp/date/tree/v2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/leafsphp",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/leaf",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2024-08-17T05:18:39+00:00"
+        },
+        {
             "name": "leafs/exception",
             "version": "v3.4",
             "source": {
@@ -790,6 +855,69 @@
                 }
             ],
             "time": "2024-10-10T13:53:21+00:00"
+        },
+        {
+            "name": "leafs/logger",
+            "version": "v1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/leafsphp/logger.git",
+                "reference": "fbf454d87285110d28d068193e8c6ebca3f4070e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/leafsphp/logger/zipball/fbf454d87285110d28d068193e8c6ebca3f4070e",
+                "reference": "fbf454d87285110d28d068193e8c6ebca3f4070e",
+                "shasum": ""
+            },
+            "require": {
+                "leafs/date": "*",
+                "leafs/fs": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/scripts.php"
+                ],
+                "psr-4": {
+                    "Leaf\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Darko",
+                    "email": "mickdd22@gmail.com",
+                    "homepage": "https://mychi.netlify.app",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Leaf PHP logger utility",
+            "homepage": "https://leafphp.netlify.app/#/",
+            "keywords": [
+                "framework",
+                "leaf",
+                "logger",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/leafsphp/logger/issues",
+                "source": "https://github.com/leafsphp/logger/tree/v1.4.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/leafsphp",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/leaf",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2024-10-19T21:33:22+00:00"
         },
         {
             "name": "nette/schema",

@@ -6,7 +6,8 @@
     "tracy/tracy": "^2.10",
     "guzzlehttp/guzzle": "^7.0",
     "leafs/leaf": "^3.7",
-    "leafs/cors": "^1.2"
+    "leafs/cors": "^1.2",
+    "leafs/logger": "^1.4"
   },
   "autoload": {
     "psr-4": {

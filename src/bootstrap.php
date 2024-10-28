@@ -2,18 +2,22 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
-const LOG_DIR = __DIR__ . '/../log';
+
 function isDev(): bool {
     return _env('APP_ENV', 'production') === 'development';
+}
+function getLogDir(): string
+{
+    $logDir = __DIR__ . '/../log';
+    if (!is_dir($logDir)) {
+        mkdir($logDir);
+    }
+    return realpath($logDir);
 }
 
 use Dotenv\Exception\InvalidEncodingException;
 use Dotenv\Exception\InvalidFileException;
 use Leaf\Http\Status;
-
-if (!is_dir(LOG_DIR)) {
-    mkdir(LOG_DIR);
-}
 
 if (isDev()) {
     try {

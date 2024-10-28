@@ -15,6 +15,12 @@ final class ChatwootListener extends Leaf\App
 
     public function __construct(array $userSettings = [])
     {
+        $userSettings = array_merge($userSettings, [
+            'log.enabled' => true,
+            'log.dir' => getLogDir(),
+            'log.file' => (new \DateTime())->format('Y-m-d') . '_crash_logs.log',
+        ]);
+
         parent::__construct($userSettings);
         $this->cors(
             [
@@ -61,7 +67,8 @@ final class ChatwootListener extends Leaf\App
             $event = $processor->process($schema, $rawData);
             $this->response()->next($event);
         } catch (\Exception $e) {
-            // log error $e
+            $this->logger()->error($e);
+            file_put_contents($this->config('log.dir') . time() . '.req', json_encode($this->request()::rawData()));
             $this->response()->exit([], Leaf\Http\Status::HTTP_BAD_REQUEST);
         }
     }
