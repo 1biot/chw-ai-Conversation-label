@@ -29,7 +29,7 @@ class Message implements ISchema
     public \stdClass $sentiment;
     public string $source_id;
     public string $status;
-    public ?DateTime $update_at;
+    public ?DateTime $updated_at;
 
     public static function getSchema(): Schema
     {

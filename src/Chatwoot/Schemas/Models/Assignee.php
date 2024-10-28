@@ -9,7 +9,7 @@ use Schema\Schema as ISchema;
 class Assignee implements ISchema
 {
     public ?string $availability_status;
-    public string $availability_name;
+    public string $available_name;
     public string $avatar_url;
     public int $id;
     public string $name;

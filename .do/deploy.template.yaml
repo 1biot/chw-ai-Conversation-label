@@ -9,15 +9,12 @@ spec:
       instance_count: 1
       instance_size_slug: basic-xxs
       envs:
+        - key: APP_ENV
+          scope: RUN_TIME
+          value: production
         - key: AUTH_TOKEN
           scope: RUN_TIME
         - key: CHATWOOT_API_ACCESS_TOKEN
           scope: RUN_TIME
         - key: CHATWOOT_API_URL
-          scope: RUN_TIME
-        - key: OPENAI_API_KEY
-          scope: RUN_TIME
-        - key: OPENAI_ORG
-          scope: RUN_TIME
-        - key: OPENAI_ASSISTANT_ID
           scope: RUN_TIME

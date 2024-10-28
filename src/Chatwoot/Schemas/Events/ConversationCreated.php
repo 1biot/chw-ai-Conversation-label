@@ -7,7 +7,6 @@ use Chatwoot\Schemas\Models\ContactInbox;
 use Chatwoot\Schemas\Models\Event;
 use Chatwoot\Schemas\Models\Message;
 use Chatwoot\Schemas\Models\Meta;
-use Chatwoot\Schemas\Models\Sender;
 use DateTime;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
@@ -24,6 +23,7 @@ class ConversationCreated implements ISchema
     public int $contact_last_seen_at;
     public int $created_at;
     public \stdClass $custom_attributes;
+    public int $id;
     public ?DateTime $first_reply_created_at;
     public int $inbox_id;
     public array $labels;
@@ -32,6 +32,17 @@ class ConversationCreated implements ISchema
     /** @var Message[] $messages */
     public array $messages;
     public Meta $meta;
+    public ?int $priority;
+    public ?DateTime $snoozed_until;
+    public string $status;
+    public int $timestamp;
+    public int $unread_count;
+    public int $waiting_since;
+
+    public function getInitialMessage(): ?Message
+    {
+        return $this->messages[0] ?? null;
+    }
 
     public static function getSchema(): Schema
     {

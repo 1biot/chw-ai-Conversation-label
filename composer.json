@@ -5,10 +5,12 @@
     "orhanerday/open-ai": "^5.2",
     "tracy/tracy": "^2.10",
     "guzzlehttp/guzzle": "^7.0",
-    "nette/http": "^3.3"
+    "leafs/leaf": "^3.7",
+    "leafs/cors": "^1.2"
   },
   "autoload": {
     "psr-4": {
+      "App\\": "./src/App",
       "Chatwoot\\": "./src/Chatwoot",
       "OpenAi\\": "./src/OpenAi",
       "Schema\\": "./src/Schema"

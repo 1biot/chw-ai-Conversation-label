@@ -1,7 +1,8 @@
+log
 vendor
+.idea
 endpoint.http
 http-client.*
 last_request
 .DS_Store
 .env
-.idea
