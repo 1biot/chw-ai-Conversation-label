@@ -10,7 +10,7 @@ class Meta implements ISchema
 {
     public Assignee $assignee;
     public bool $hmac_verified;
-    public sender $sender;
+    public Sender $sender;
     public ?string $team;
 
     public static function getSchema(): Schema

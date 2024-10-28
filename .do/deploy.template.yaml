@@ -1,11 +1,11 @@
 spec:
-  name: chw-ai-conversation-label
+  name: chatwoot-listener
   services:
     - environment_slug: php
       git:
         branch: main
         repo_clone_url: https://github.com/1biot/chw-ai-conversation-label.git
-      name: chw-ai-conversation-label
+      name: chatwoot-listener
       instance_count: 1
       instance_size_slug: basic-xxs
       envs:

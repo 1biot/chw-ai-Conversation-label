@@ -11,6 +11,10 @@ class LabelConversion extends Assistant
     private const ASSISTANT_DESCRIPTION = 'LabelConversion';
     private const ASSISTANT_INSTRUCTION = 'Decide in one word, based on the message, whether the context is %s';
 
+    /**
+     * @param string|null $assistantId
+     * @param null|array<string> $labels
+     */
     public function __construct(
         protected ?string $assistantId,
         private readonly ?array $labels = null
@@ -25,6 +29,7 @@ class LabelConversion extends Assistant
     }
 
     /**
+     * @return array<string>
      * @throws \Exception
      */
     public function __invoke(OpenAi $client, string $message): array
@@ -36,6 +41,7 @@ class LabelConversion extends Assistant
     }
 
     /**
+     * @return array<string>
      * @throws \Exception
      */
     private function run(OpenAi $client, string $message): array

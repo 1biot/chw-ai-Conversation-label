@@ -1,32 +1,25 @@
 <?php
 declare(strict_types=1);
 
-use App\ChatwootListener;
-use Chatwoot\Enums\Event;
-use Chatwoot\Schemas\Events\ConversationCreated;
-use Leaf\Http\Request;
-use Leaf\Http\Response;
-use OpenAi\Assistants\LabelConversion;
-use Orhanerday\OpenAi\OpenAi;
-
-/** @var ChatwootListener $app */
+/** @var App\ChatwootListener $app */
 $app = require_once __DIR__ . '/src/bootstrap.php';
 
-$app->on(Event::ConversationCreated, new class($app) {
+$myNewWebhookAction = new class($app)
+{
+    private Orhanerday\OpenAi\OpenAi $openAi;
 
-    private OpenAi $openAi;
-
-    public function __construct(private readonly ChatwootListener $app) {
-        $this->openAi = new OpenAi($_ENV['OPENAI_API_KEY']);
-        $this->openAi->setORG($_ENV['OPENAI_ORG']);
+    public function __construct(private readonly App\ChatwootListener $app)
+    {
+        $this->openAi = new Orhanerday\OpenAi\OpenAi(_env('OPENAI_API_KEY'), '');
+        $this->openAi->setORG(_env('OPENAI_ORG', ''));
         $this->openAi->setAssistantsBetaVersion('v2');
         $this->openAi->setTimeout(3);
     }
 
-    public function __invoke(Request $request, Response $response): void
+    public function __invoke(Leaf\Http\Request $request, Leaf\Http\Response $response): void
     {
         try {
-            /** @var ConversationCreated $conversation */
+            /** @var Chatwoot\Schemas\Events\ConversationCreated $conversation */
             $conversation = $request->next();
             $initialMessage = $conversation->getInitialMessage();
             if ($initialMessage === null || $initialMessage->content === '') {
@@ -56,8 +49,8 @@ $app->on(Event::ConversationCreated, new class($app) {
     private function getLabelFromChatGPT(string $message): ?array
     {
         try {
-            $openAiAssistantId = $_ENV['OPENAI_ASSISTANT_ID'];
-            $assistant = new LabelConversion(
+            $openAiAssistantId = _env('OPENAI_ASSISTANT_ID', '');
+            $assistant = new OpenAi\Assistants\LabelConversion(
                 $openAiAssistantId === '' ? null : $openAiAssistantId,
                 ["demand", "support", "spam", "offer", "billing"]
             );
@@ -67,6 +60,7 @@ $app->on(Event::ConversationCreated, new class($app) {
             return null;
         }
     }
-});
+};
 
+$app->onConversationCreated($myNewWebhookAction);
 $app->run();

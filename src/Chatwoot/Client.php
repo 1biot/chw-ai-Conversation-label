@@ -12,6 +12,9 @@ class Client
         private readonly string $domain = "https://api.chatwoot.com"
     ) {}
 
+    /**
+     * @param array<string> $labels
+     */
     public function addConversationLabel(int $accountId, int $conversationId, array $labels = []): bool
     {
         $api = sprintf(

@@ -26,6 +26,7 @@ class ConversationCreated implements ISchema
     public int $id;
     public ?DateTime $first_reply_created_at;
     public int $inbox_id;
+    /** @var array<string> $labels */
     public array $labels;
     public int $last_activity_at;
 

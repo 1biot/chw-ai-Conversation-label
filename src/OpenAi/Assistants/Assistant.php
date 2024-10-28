@@ -9,6 +9,9 @@ abstract class Assistant
 {
     private bool $autoRemove = false;
 
+    /**
+     * @param array<string> $tools
+     */
     public function __construct(
         protected ?string $assistantId,
         protected Model $model,
@@ -65,6 +68,10 @@ abstract class Assistant
         }
     }
 
+    /**
+     * @param string $response
+     * @return array<string|int, mixed>
+     */
     public function responseToArray(string $response): array
     {
         return @json_decode($response, true);

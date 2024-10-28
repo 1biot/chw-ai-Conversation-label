@@ -12,10 +12,13 @@ use Nette;
 final class ChatwootListener extends Leaf\App
 {
     /**
-     * @var array{value-of<Chatwoot\Enums\Event::ConversationCreated>?: callable[]}
+     * @var array<value-of<Chatwoot\Enums\Event::ConversationCreated>, callable[]>
      */
     private array $listeners = [];
 
+    /**
+     * @param array<string, string|bool|null> $userSettings
+     */
     public function __construct(array $userSettings = [])
     {
         $userSettings = array_merge($userSettings, [
@@ -64,10 +67,15 @@ final class ChatwootListener extends Leaf\App
         return $this;
     }
 
+    public function onConversationCreated(callable $callback): self
+    {
+        return $this->on(Chatwoot\Enums\Event::ConversationCreated, $callback);
+    }
+
     protected function authMiddleware(): void
     {
         $token = $this->request()::urlData('token', '');
-        if ($token !== $_ENV['AUTH_TOKEN'] ?? '') {
+        if ($token !== _env('AUTH_TOKEN', '')) {
             $this->response()->exit([], Leaf\Http\Status::HTTP_UNAUTHORIZED);
         }
     }
@@ -78,7 +86,7 @@ final class ChatwootListener extends Leaf\App
             $rawData = $this->request()::rawData();
             $schema = Chatwoot\Enums\Event::getSchema($rawData['event'] ?? '');
             $processor = new Nette\Schema\Processor;
-            /** @var Chatwoot\Schemas\Events\ConversationCreated $conversationCreatedEvent */
+            /** @var Chatwoot\Schemas\Events\ConversationCreated $event */
             $event = $processor->process($schema, $rawData);
             $this->response()->next($event);
         } catch (\Exception $e) {
@@ -108,7 +116,7 @@ final class ChatwootListener extends Leaf\App
         $this->response()->die([], Leaf\Http\Status::HTTP_NOT_FOUND);
     }
 
-    protected function errorHandler($e = null): void
+    protected function errorHandler(mixed $e = null): void
     {
         if ($e) {
             if ($this->config('log.enabled')) {
