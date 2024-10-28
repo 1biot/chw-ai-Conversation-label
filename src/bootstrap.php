@@ -8,7 +8,7 @@ function isDev(): bool {
 }
 function getLogDir(): string
 {
-    $logDir = __DIR__ . '/../log';
+    $logDir = __DIR__ . '/../log/';
     if (!is_dir($logDir)) {
         mkdir($logDir);
     }
