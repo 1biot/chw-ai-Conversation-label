@@ -6,6 +6,9 @@ use Chatwoot;
 use Leaf;
 use Nette;
 
+/**
+ * @property Chatwoot\Client $chatwootClient
+ */
 final class ChatwootListener extends Leaf\App
 {
     /**
@@ -17,11 +20,23 @@ final class ChatwootListener extends Leaf\App
     {
         $userSettings = array_merge($userSettings, [
             'log.enabled' => true,
+            'log.style' => 'linux',
             'log.dir' => getLogDir(),
-            'log.file' => (new \DateTime())->format('Y-m-d') . '_crash_logs.log',
+            'log.file' => (new \DateTime())->format('Y-m-d') . '_app.log',
         ]);
 
         parent::__construct($userSettings);
+
+        $this->register(
+            'chatwootClient',
+            function(): Chatwoot\Client {
+                return new Chatwoot\Client(
+                    $_ENV['CHATWOOT_API_ACCESS_TOKEN'],
+                    $_ENV['CHATWOOT_API_URL']
+                );
+            }
+        );
+
         $this->cors(
             [
                 'origin' => $this->config('debug') ? '*' : _env('CHATWOOT_API_URL'),
@@ -68,8 +83,8 @@ final class ChatwootListener extends Leaf\App
             $this->response()->next($event);
         } catch (\Exception $e) {
             $this->logger()->error($e);
-            file_put_contents($this->config('log.dir') . time() . '.req', json_encode($this->request()::rawData()));
-            $this->response()->exit([], Leaf\Http\Status::HTTP_BAD_REQUEST);
+            file_put_contents($this->config('log.dir') . (new \DateTime())->format('Y-m-d\TH-i-sO') . '.req', json_encode($this->request()::rawData()));
+            $this->response()->exit('Validation of schema fails', Leaf\Http\Status::HTTP_BAD_REQUEST);
         }
     }
 
@@ -82,7 +97,7 @@ final class ChatwootListener extends Leaf\App
             if (is_callable($callback)) {
                 call_user_func_array(
                     $callback,
-                    [$event, $this->request(), $this->response()]
+                    [$this->request(), $this->response()]
                 );
             }
         }
@@ -93,8 +108,14 @@ final class ChatwootListener extends Leaf\App
         $this->response()->die([], Leaf\Http\Status::HTTP_NOT_FOUND);
     }
 
-    protected function errorHandler(): void
+    protected function errorHandler($e = null): void
     {
+        if ($e) {
+            if ($this->config('log.enabled')) {
+                $this->logger()->error($e);
+            }
+        }
+
         $this->response()->die([], Leaf\Http\Status::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

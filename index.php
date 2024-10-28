@@ -8,18 +8,26 @@ use Leaf\Http\Request;
 use Leaf\Http\Response;
 use OpenAi\Assistants\LabelConversion;
 use Orhanerday\OpenAi\OpenAi;
-use Tracy\Debugger;
-use Tracy\ILogger;
-
-$_ENV['APP_ENV'] = 'production';
 
 /** @var ChatwootListener $app */
 $app = require_once __DIR__ . '/src/bootstrap.php';
 
-$app->on(Event::ConversationCreated, new class {
-    public function __invoke(ConversationCreated $conversation, Request $request, Response $response): void
+$app->on(Event::ConversationCreated, new class($app) {
+
+    private OpenAi $openAi;
+
+    public function __construct(private readonly ChatwootListener $app) {
+        $this->openAi = new OpenAi($_ENV['OPENAI_API_KEY']);
+        $this->openAi->setORG($_ENV['OPENAI_ORG']);
+        $this->openAi->setAssistantsBetaVersion('v2');
+        $this->openAi->setTimeout(3);
+    }
+
+    public function __invoke(Request $request, Response $response): void
     {
         try {
+            /** @var ConversationCreated $conversation */
+            $conversation = $request->next();
             $initialMessage = $conversation->getInitialMessage();
             if ($initialMessage === null || $initialMessage->content === '') {
                 throw new InvalidArgumentException('Message content is empty');
@@ -30,34 +38,32 @@ $app->on(Event::ConversationCreated, new class {
                 throw new RuntimeException('Failed to get label from message');
             }
 
-            $client = new Chatwoot\Client($_ENV['CHATWOOT_API_ACCESS_TOKEN'], $_ENV['CHATWOOT_API_URL']);
-            if (!$client->addConversationLabel($initialMessage->account_id, $conversation->id, $labels)) {
+            if (!$this->app->chatwootClient->addConversationLabel($initialMessage->account_id, $conversation->id, $labels)) {
                 throw new RuntimeException('Failed to add label');
             }
 
+            $this->app->logger()->info([
+                'conversation_id' => $conversation->id,
+                'labels' => $labels,
+            ]);
             $response->noContent();
         } catch (RuntimeException $e) {
-            Tracy\Debugger::log($e->getMessage(), Tracy\ILogger::ERROR);
+            $this->app->logger()->error($e);
             response()->json([], Leaf\Http\Status::HTTP_BAD_REQUEST, true);
         }
     }
 
     private function getLabelFromChatGPT(string $message): ?array
     {
-        $openAi = new OpenAi($_ENV['OPENAI_API_KEY']);
-        $openAi->setORG($_ENV['OPENAI_ORG']);
-        $openAi->setAssistantsBetaVersion('v2');
-        $openAi->setTimeout(3);
-
         try {
             $openAiAssistantId = $_ENV['OPENAI_ASSISTANT_ID'];
             $assistant = new LabelConversion(
                 $openAiAssistantId === '' ? null : $openAiAssistantId,
                 ["demand", "support", "spam", "offer", "billing"]
             );
-            return $assistant($openAi, $message);
+            return $assistant($this->openAi, $message);
         } catch (Exception $e) {
-            Debugger::log($e->getMessage(), ILogger::ERROR);
+            $this->app->logger()->error($e);
             return null;
         }
     }
