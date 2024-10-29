@@ -17,6 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          ini-values: "memory_limit=-1"
+          php-version: "php8.2"
+
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
