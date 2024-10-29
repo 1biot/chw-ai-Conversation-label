@@ -1,4 +1,7 @@
 {
+  "name": "1biot/chw-ai-conversation-label",
+  "description": "Chatwoot listener for receiving webhooks",
+  "licence": "MIT",
   "require": {
     "php": ">=8.2",
     "nette/schema": "^1.3",
