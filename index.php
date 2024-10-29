@@ -40,7 +40,7 @@ $myNewWebhookAction = new class($app)
                 'labels' => $labels,
             ]);
             $response->noContent();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             $this->app->logger()->error($e);
             response()->json([], Leaf\Http\Status::HTTP_BAD_REQUEST, true);
         }

@@ -2,10 +2,12 @@
 
 namespace Chatwoot;
 
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp;
+use Leaf;
 
 class Client
 {
+    private ?Leaf\Log $logger;
 
     public function __construct(
         private readonly string $apiAccessToken,
@@ -24,19 +26,34 @@ class Client
             $conversationId
         );
 
-        $client = new \GuzzleHttp\Client();
         try {
-            $response = $client->post($api, [
-                'headers' => [
-                    'Content-type' => 'application/json; charset=utf-8',
-                    'api_access_token' => $this->apiAccessToken
-                ],
-                'body' => json_encode(['labels' => $labels])
-            ]);
-
+            $client = new GuzzleHttp\Client();
+            $response = $client->post($api, $this->assembleRequestOptions(['labels' => $labels]));
             return $response->getStatusCode() === 200;
-        } catch (GuzzleException $e) {
+        } catch (GuzzleHttp\Exception\GuzzleException $e) {
+            $this->logger?->error($e);
             return false;
         }
+    }
+
+    /**
+     * @param array<string, array<string, string>> $body
+     * @return array<string, string|array<string, string>>
+     */
+    private function assembleRequestOptions(array $body): array
+    {
+        return [
+            'headers' => [
+                'Content-type' => 'application/json; charset=utf-8',
+                'api_access_token' => $this->apiAccessToken
+            ],
+            'body' => json_encode($body)
+        ];
+    }
+
+    public function setLogger(?Leaf\Log $logger): self
+    {
+        $this->logger = $logger;
+        return $this;
     }
 }

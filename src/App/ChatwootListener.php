@@ -21,22 +21,16 @@ final class ChatwootListener extends Leaf\App
      */
     public function __construct(array $userSettings = [])
     {
-        $userSettings = array_merge($userSettings, [
-            'log.enabled' => true,
-            'log.style' => 'linux',
-            'log.dir' => getLogDir(),
-            'log.file' => (new \DateTime())->format('Y-m-d') . '_app.log',
-        ]);
-
-        parent::__construct($userSettings);
+        parent::__construct(array_merge($this->getDefaultSettings(), $userSettings));
 
         $this->register(
             'chatwootClient',
             function(): Chatwoot\Client {
-                return new Chatwoot\Client(
+                $chatwootClient = new Chatwoot\Client(
                     $_ENV['CHATWOOT_API_ACCESS_TOKEN'],
                     $_ENV['CHATWOOT_API_URL']
                 );
+                return $chatwootClient->setLogger($this->logger());
             }
         );
 
@@ -125,5 +119,18 @@ final class ChatwootListener extends Leaf\App
         }
 
         $this->response()->die([], Leaf\Http\Status::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @return array<string, string|bool|null>
+     */
+    protected function getDefaultSettings(): array
+    {
+        return [
+            'log.enabled' => true,
+            'log.style' => 'linux',
+            'log.dir' => getLogDir(),
+            'log.file' => (new \DateTime())->format('Y-m-d') . '_app.log',
+        ];
     }
 }
