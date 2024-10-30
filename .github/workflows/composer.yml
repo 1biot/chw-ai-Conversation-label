@@ -22,7 +22,7 @@ jobs:
         with:
           coverage: "none"
           ini-values: "memory_limit=-1"
-          php-version: "php8.2"
+          php-version: "8.2"
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
