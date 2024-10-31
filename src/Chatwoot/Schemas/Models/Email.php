@@ -9,9 +9,9 @@ use Schema\Schema as ISchema;
 
 class Email implements ISchema
 {
-    /** @var null|string|array<string> $bcc_email */
+    /** @var null|string|array<string> $bcc */
     public null|string|array $bcc;
-    /** @var null|string|array<string> $bcc_email */
+    /** @var null|string|array<string> $cc */
     public null|string|array $cc;
     public string $content_type;
     public DateTime $date;
@@ -46,6 +46,9 @@ class Email implements ISchema
         ])->castTo(self::class);
     }
 
+    /**
+     * @return string[]
+     */
     public function getBcc(): array
     {
         $bccArray = $this->bcc;
@@ -58,6 +61,9 @@ class Email implements ISchema
         return $bccArray;
     }
 
+    /**
+     * @return string[]
+     */
     public function getCc(): array
     {
         $ccArray = $this->cc;

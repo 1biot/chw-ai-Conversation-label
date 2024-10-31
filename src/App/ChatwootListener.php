@@ -42,10 +42,11 @@ final class ChatwootListener extends Leaf\App
         );
         $this->config('debug');
         self::use([$this, 'authMiddleware']);
-        self::post('/', ['middleware' => [$this, 'checkEventMiddleware'], [$this, 'actionProcessEvent']]);
-        self::get('/', function() {
-            $this->response()->json('hello world');
-        });
+        self::post('/webhook', ['middleware' => [$this, 'checkEventMiddleware'], [$this, 'actionProcessEvent']]);
+
+        if (_env('CHATWOOT_API_ACCOUNT_ID', 0) && _env('CHATWOOT_API_INBOX_ID', 0)) {
+            self::post('/conversation', [$this, 'actionProcessCreateConversation']);
+        }
 
         self::set404([$this, 'action404']);
         self::setErrorHandler([$this, 'errorHandler']);
@@ -103,6 +104,11 @@ final class ChatwootListener extends Leaf\App
                 );
             }
         }
+    }
+
+    protected function actionProcessCreateConversation(): void
+    {
+
     }
 
     protected function action404(): void
