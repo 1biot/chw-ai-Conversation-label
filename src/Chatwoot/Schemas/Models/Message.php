@@ -11,6 +11,8 @@ class Message implements ISchema
 {
     public int $account_id;
     public \stdClass $additional_attributes;
+    /** @var Attachment[] $attachments */
+    public array $attachments;
     public string $content;
     public ContentAttributes $content_attributes;
     public string $content_type;
@@ -36,6 +38,7 @@ class Message implements ISchema
         return Expect::structure([
             'account_id' => Expect::int(),
             'additional_attributes' => Expect::structure([]),
+            'attachments' => Expect::arrayOf(Attachment::getSchema()),
             'content' => Expect::string(),
             'content_attributes' => ContentAttributes::getSchema(),
             'content_type' => Expect::string(),
@@ -54,7 +57,7 @@ class Message implements ISchema
             'sentiment' => Expect::structure([]),
             'source_id' => Expect::string(),
             'status' => Expect::string(),
-            'updated_at' => Expect::anyOf(Expect::null(), Expect::string()->castTo(DateTime::class)),
+            'updated_at' => Expect::type('null|string')->castTo(DateTime::class),
         ])->castTo(self::class);
     }
 }

@@ -9,7 +9,7 @@ use Schema\Schema as ISchema;
 class Sender implements ISchema
 {
     public SenderAdditionalAttributes $additional_attributes;
-    public \stdClass $custom_attributes;
+    public mixed $custom_attributes;
     public string $email;
     public int $id;
     public ?string $identifier;
@@ -22,12 +22,12 @@ class Sender implements ISchema
     {
         return Expect::structure([
             'additional_attributes' => SenderAdditionalAttributes::getSchema(),
-            'custom_attributes' => Expect::structure([]),
+            'custom_attributes' => Expect::mixed(),
             'email' => Expect::string(),
             'id' => Expect::int(),
-            'identifier' => Expect::anyOf(Expect::null(), Expect::string()),
+            'identifier' => Expect::type('null|string'),
             'name' => Expect::string(),
-            'phone_number' => Expect::anyOf(Expect::null(), Expect::string()),
+            'phone_number' => Expect::type('null|string'),
             'thumbnail' => Expect::string(),
             'type' => Expect::string(),
         ])->castTo(self::class);

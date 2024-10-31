@@ -7,15 +7,17 @@ use Schema\Schema as ISchema;
 
 class ContentAttributes implements ISchema
 {
-    public ?string $bcc_email;
-    public ?string $cc_email;
+    /** @var null|string|array<string> $bcc_email */
+    public null|array|string $bcc_email;
+    /** @var null|string|array<string> $cc_email */
+    public null|array|string $cc_email;
     public Email $email;
 
     public static function getSchema(): \Nette\Schema\Schema
     {
         return Expect::structure([
-            'bcc_email' => Expect::anyOf(Expect::null(), Expect::string()),
-            'cc_email' => Expect::anyOf(Expect::null(), Expect::string()),
+            'bcc_email' => Expect::anyOf(Expect::null(), Expect::string(), Expect::arrayOf(Expect::string())),
+            'cc_email' => Expect::anyOf(Expect::null(), Expect::string(), Expect::arrayOf(Expect::string())),
             'email' => Email::getSchema(),
         ])->castTo(self::class);
     }
